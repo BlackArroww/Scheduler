@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -16,7 +17,7 @@ import java.awt.CardLayout;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-public class view_scheduler extends JFrame {
+public class View_scheduler extends JFrame {
 
 	private JPanel contentPane;
 	private JTabbedPane tabbedPane;
@@ -25,7 +26,7 @@ public class view_scheduler extends JFrame {
 	private JButton apl_btn;
 	private JButton hzf_btn;
 	private JButton run_btn;
-	private JEditorPane scheduler_dpl;
+	private JTable scheduler_dpl;
 	private JTextField name_fld;
 	private JTextField priority_fld;
 	private JTextField work_fld;
@@ -37,9 +38,9 @@ public class view_scheduler extends JFrame {
 	private JLabel scheduler_lbl;
 	private JComboBox comboBox;
 	private JPanel prozesse;
-	private JEditorPane prozesse_dpl;
+	private JTable prozesse_dpl;
 
-	public view_scheduler() {
+	public View_scheduler() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		setTitle("Best GUI 1630");
@@ -76,9 +77,9 @@ public class view_scheduler extends JFrame {
 		run_btn.setFont(new Font("Times New Roman", Font.PLAIN, 19));
 		run_btn.setBounds(756, 600, 193, 31);
 
-		JEditorPane scheduler_dpl = new JEditorPane();
+		scheduler_dpl = new JTable();
 		scheduler_dpl.setBounds(435, 81, 794, 508);
-		scheduler_dpl.setEditable(false);
+		
 
 		name_fld = new JTextField();
 		name_fld.setBounds(47, 138, 287, 43);
@@ -100,7 +101,7 @@ public class view_scheduler extends JFrame {
 		name_lbl.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		name_lbl.setBounds(29, 98, 305, 29);
 
-		priority_lbl = new JLabel("Priorität : (Integer)");
+		priority_lbl = new JLabel("Priorität : (von 0-15)");
 		priority_lbl.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		priority_lbl.setBounds(29, 218, 305, 29);
 
@@ -124,8 +125,7 @@ public class view_scheduler extends JFrame {
 		prozesse = new JPanel();
 		prozesse.setLayout(new CardLayout(0, 0));
 
-		prozesse_dpl = new JEditorPane();
-		prozesse_dpl.setEditable(false);
+		prozesse_dpl = new JTable();
 		
 		
 		//Add Element to GUI 
@@ -152,5 +152,37 @@ public class view_scheduler extends JFrame {
 	
 		
 		
+	}
+	
+	public JButton getApl_btn() {
+		return apl_btn;
+	}
+	
+	public JButton getHzf_btn() {
+		return hzf_btn;
+	}
+	
+	public JButton getRun_btn() {
+		return run_btn;
+	}
+	
+	public JTextField getName_fld() {
+		return name_fld;
+	}
+	
+	public JTextField getPriority_fld() {
+		return priority_fld;
+	}
+	
+	public JTextField getWork_fld() {
+		return work_fld;
+	}
+	
+	public JTextField getWait_fld() {
+		return wait_fld;
+	}
+	
+	public JComboBox getComboBox() {
+		return comboBox;
 	}
 }

@@ -2,15 +2,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
-public class app_scheduler {
+public class App_scheduler {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException { 
 
-	    //Model m = new Model(); 
-	    view_scheduler v = new view_scheduler(); 
-	    //Controller c = new Controller(m, v); 
-	    //c.readData();
+	    Model_scheduler m = new Model_scheduler(); 
+	    View_scheduler v = new View_scheduler(); 
+	    Controller_scheduler c = new Controller_scheduler(m, v); 
 	    v.setVisible(true); 
+	    c.initController();
 
 	  } 
 }
