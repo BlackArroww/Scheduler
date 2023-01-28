@@ -105,11 +105,11 @@ public class View_scheduler extends JFrame {
 		priority_lbl.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		priority_lbl.setBounds(29, 218, 305, 29);
 
-		work_lbl = new JLabel("Rechenzeit : (x ; x...)");
+		work_lbl = new JLabel("Rechenzeit : (x;x...)");
 		work_lbl.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		work_lbl.setBounds(29, 338, 305, 29);
 
-		wait_lbl = new JLabel("Wartezeit : (x ; x...)");
+		wait_lbl = new JLabel("Wartezeit : (x;x...)");
 		wait_lbl.setFont(new Font("Times New Roman", Font.ITALIC, 20));
 		wait_lbl.setBounds(29, 458, 305, 29);
 
