@@ -118,6 +118,7 @@ public class View_scheduler extends JFrame {
 		scheduler_lbl.setBounds(874, 23, 172, 31);
 
 		comboBox = new JComboBox();
+		comboBox.addItem("Abi - Scheduler");
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		comboBox.setBounds(1036, 23, 193, 31);
 
