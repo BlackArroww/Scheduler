@@ -10,14 +10,11 @@ public class Controller_scheduler {
 	private Model_scheduler model;
 	private View_scheduler view;
 	private Logic_scheduler scheduler;
-	private String name;
-	private String priority;
-	private String worktime;
-	private String waittime;
 	private int priority_number;
+	private int faktor;
 	
-	public ArrayList<ArrayList<String>> ProcessList = new ArrayList();
-	public ArrayList<String> PrioList = new ArrayList();
+	public ArrayList<ArrayList<String>> ProcessList = new ArrayList<ArrayList<String>>();
+
 	
 	
 
@@ -36,7 +33,7 @@ public class Controller_scheduler {
 		}
 
 	public void saveProcess(ActionEvent e) {
-		PutElementsTogether();
+		CreateProcessObject();
 		if(view.getName_fld().getText().isEmpty() || view.getPriority_fld().getText().isEmpty() || view.getWork_fld().getText().isEmpty() || view.getWait_fld().getText().isEmpty() || priority_number > 15) {
 		
 		}
@@ -69,49 +66,84 @@ public class Controller_scheduler {
 		
 	}
 	
-	public void PutElementsTogether(){
+	public void CreateProcessObject(){
 		
-		name = view.getName_fld().toString();
-		priority = view.getPriority_fld().toString();
-		worktime = view.getWork_fld().toString();
-		waittime = view.getWait_fld().toString();
 		
-		String prio = view.getPriority_fld().getText();
-		priority_number = Integer.parseInt(prio);
 		
 		if (view.getName_fld().getText().isEmpty() || view.getPriority_fld().getText().isEmpty() || view.getWork_fld().getText().isEmpty() || view.getWait_fld().getText().isEmpty()) {
 			
 			JOptionPane.showMessageDialog(null,"Bitte gib erst alles für einen Prozess ein, bevor du ihn hinzufügst !!!","Mitteilung", JOptionPane.WARNING_MESSAGE);
 		}
 		
-		else if(priority_number > 15) {
-			JOptionPane.showMessageDialog(null,"Bitte gib keine Priorität größer als 15 ein!!!","Mitteilung", JOptionPane.WARNING_MESSAGE);
-		}
 		
 		else {
-			ArrayList<String> Process = new ArrayList<>();
 			
-			Process.add(view.getName_fld().getText());
-			Process.add(view.getPriority_fld().getText());
+			String prio = view.getPriority_fld().getText();
+			priority_number = Integer.parseInt(prio);
 			
-			//String "auseinader schneiden"
+			if(priority_number > 15) {
+				JOptionPane.showMessageDialog(null,"Bitte gib keine Priorität größer als 15 ein!!!","Mitteilung", JOptionPane.WARNING_MESSAGE);
+			}
+			
+			ArrayList<String> Prozess = new ArrayList<>();
+//			
+//			Process.add(view.getName_fld().getText());
+//			Process.add(view.getPriority_fld().getText());
+//			
+//			//String "auseinader schneiden"
+//			
+//			String String1 = view.getWork_fld().getText();
+//			String sub[] = String1.split(";");
+//			String String2 = view.getWait_fld().getText();
+//			String sub2[] = String2.split(";");
+//		
+//			for (int x = 0; x < sub.length; x++) {
+//				Process.add(sub[x]);
+//			    if (x < sub2.length) {					//Wird benötigt wenn es mehr Rechenzeiten(RZ) als Wartezeiten(WZ) gibt und die Prozesse MÜSSEN mit einer RZ aufhören 
+//			    										//--> bzw es gibt immer eine WZ weniger als RZ
+//					Process.add(sub2[x]);
+//				}
+//			}
+//			ProcessList.add(Process);
 			
 			String String1 = view.getWork_fld().getText();
 			String sub[] = String1.split(";");
 			String String2 = view.getWait_fld().getText();
 			String sub2[] = String2.split(";");
-			
-			PrioList.add(view.getPriority_fld().getText());
 		
 			for (int x = 0; x < sub.length; x++) {
-				Process.add(sub[x]);
+				Prozess.add(sub[x]);
 			    if (x < sub2.length) {					//Wird benötigt wenn es mehr Rechenzeiten(RZ) als Wartezeiten(WZ) gibt und die Prozesse MÜSSEN mit einer RZ aufhören 
 			    										//--> bzw es gibt immer eine WZ weniger als RZ
-					Process.add(sub2[x]);
+					Prozess.add(sub2[x]);
 				}
 			}
 			
-			ProcessList.add(Process);
+			
+			ArrayList<String> process_queue = new ArrayList<String>();
+			for (int x = 0; x < Prozess.size();x++) {
+				String Faktor = Prozess.get(x);
+				faktor = Integer.parseInt(Faktor);
+			
+				for (int y=faktor; y>0; y--) {
+					if(x % 2 == 0){
+						process_queue.add("R");
+					}
+					else {
+						process_queue.add("W");
+					}
+				}
+			
+			
+			}
+			
+			Prozess p = new Prozess();
+			
+			p.name = view.getName_fld().getText();
+			p.prio = priority_number;
+			p.queue = process_queue;
+			
+			System.out.println(process_queue);
 			System.out.println("Prozess wurde gesichert");
 
 		}
