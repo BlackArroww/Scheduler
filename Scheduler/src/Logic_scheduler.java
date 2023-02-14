@@ -5,22 +5,27 @@ public class Logic_scheduler {
 	private static View_scheduler view;
 	private static Controller_scheduler controller;
 	
+	private static int ProcessCount = 0; 
+	
 	public Logic_scheduler(Model_scheduler m, View_scheduler v, Controller_scheduler c) { 
 
 		   this.model = m; 
-		   this.view = v;
-		   this.controller = c;
+		   Logic_scheduler.view = v;
+		   Logic_scheduler.controller = c;
 		   												
 	} 
 	
 	public static void run(){
 		if (view.getComboBox().getSelectedItem().equals("Abi - Scheduler")) {
 			
-			for (int x = 0; x > controller.ProcessList.size(); x++) {
-				
-				System.out.println(controller.ProcessList);
-				
-			}
+			ProcessCount = controller.ProcessList.size();
+			
+			System.out.println(ProcessCount);
+			
+			
+			
+			
+			
 			
 			
 		}

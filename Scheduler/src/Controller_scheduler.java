@@ -61,8 +61,6 @@ public class Controller_scheduler {
 
 	public void runScheduler(ActionEvent e) {
 		Logic_scheduler.run();
-		System.out.println(ProcessList);
-		
 	}
 	
 	public void CreateProcessObject(){
@@ -85,25 +83,10 @@ public class Controller_scheduler {
 			}
 			
 			ArrayList<String> Prozess = new ArrayList<>();
-//			
-//			Process.add(view.getName_fld().getText());
-//			Process.add(view.getPriority_fld().getText());
-//			
+
+			
 //			//String "auseinader schneiden"
-//			
-//			String String1 = view.getWork_fld().getText();
-//			String sub[] = String1.split(";");
-//			String String2 = view.getWait_fld().getText();
-//			String sub2[] = String2.split(";");
-//		
-//			for (int x = 0; x < sub.length; x++) {
-//				Process.add(sub[x]);
-//			    if (x < sub2.length) {					//Wird benötigt wenn es mehr Rechenzeiten(RZ) als Wartezeiten(WZ) gibt und die Prozesse MÜSSEN mit einer RZ aufhören 
-//			    										//--> bzw es gibt immer eine WZ weniger als RZ
-//					Process.add(sub2[x]);
-//				}
-//			}
-//			ProcessList.add(Process);
+
 			
 			String String1 = view.getWork_fld().getText();
 			String sub[] = String1.split(";");
