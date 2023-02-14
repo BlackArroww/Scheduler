@@ -13,16 +13,15 @@ public class Controller_scheduler {
 	private int priority_number;
 	private int faktor;
 	
-	public ArrayList<ArrayList<String>> ProcessList = new ArrayList<ArrayList<String>>();
+	public ArrayList<Prozess> ProcessList = new ArrayList<Prozess>();
 
 	
 	
 
-	public Controller_scheduler(Model_scheduler m, View_scheduler v, Logic_scheduler s) { 
+	public Controller_scheduler(Model_scheduler m, View_scheduler v) { 
 
 		   this.model = m; 
 		   this.view = v;
-		   this.scheduler = s;
 
 	} 
 
@@ -61,7 +60,7 @@ public class Controller_scheduler {
 	}
 
 	public void runScheduler(ActionEvent e) {
-		scheduler.run();
+		Logic_scheduler.run();
 		System.out.println(ProcessList);
 		
 	}
@@ -145,6 +144,8 @@ public class Controller_scheduler {
 			
 			System.out.println(process_queue);
 			System.out.println("Prozess wurde gesichert");
+			
+			ProcessList.add(p);
 
 		}
 		

@@ -8,8 +8,8 @@ public class App_scheduler {
 
 	    Model_scheduler m = new Model_scheduler(); 
 	    View_scheduler v = new View_scheduler(); 
-	    Logic_scheduler s = new Logic_scheduler(m, v);
-	    Controller_scheduler c = new Controller_scheduler(m, v, s); 
+	    Controller_scheduler c = new Controller_scheduler(m, v);
+	    Logic_scheduler s = new Logic_scheduler(m,v,c);
 	    
 	    v.setVisible(true); 
 	    c.initController();
