@@ -7,9 +7,9 @@ import javax.swing.text.View;
 
 public class Controller_scheduler {
 	
+	@SuppressWarnings("unused")
 	private Model_scheduler model;
 	private View_scheduler view;
-	private Logic_scheduler scheduler;
 	private int priority_number;
 	private int faktor;
 	
@@ -28,7 +28,6 @@ public class Controller_scheduler {
 	public void initController(){
 		view.getHzf_btn().addActionListener(e ->saveProcess(e) );
 		view.getApl_btn().addActionListener(e ->deleteArrayList(e));
-		view.getRun_btn().addActionListener(e ->runScheduler(e));
 		}
 
 	public void saveProcess(ActionEvent e) {
@@ -59,9 +58,6 @@ public class Controller_scheduler {
 		ProcessList.clear();
 	}
 
-	public void runScheduler(ActionEvent e) {
-		Logic_scheduler.run();
-	}
 	
 	public void CreateProcessObject(){
 		
@@ -124,13 +120,19 @@ public class Controller_scheduler {
 			p.name = view.getName_fld().getText();
 			p.prio = priority_number;
 			p.queue = process_queue;
+			p.pState = State.READY;
+			p.waittime = 0;
+			p.worktime = 0; 
 			
-			System.out.println(process_queue);
+			System.out.println(p.queue);
 			System.out.println("Prozess wurde gesichert");
-			
 			ProcessList.add(p);
 
 		}
 		
+	}
+
+	public ArrayList<Prozess> getProcessList() {
+		return ProcessList;
 	}
 }
