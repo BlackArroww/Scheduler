@@ -51,15 +51,21 @@ public class Logic_scheduler {
 							System.out.println("Prozess Liste wird neugeladen");
 							break;
 						case WAIT:
-							System.out.println("ok");
-							System.out.println("Aktuelle Prozessnummer" + activeProcessInt);
 							waiting();
-							System.out.println("ok2");
 							break;
-						case FINISHED:     
-							run = false;
-							System.out.println("Alle Prozesse sind fertig...");
-							break;
+						case FINISHED:
+							checkAllEquals(c.getProcessList());
+							if (checkAllEquals(c.getProcessList()) == true) {
+								System.out.println("Alle Prozesse fertig");
+								run = false;
+								break;
+							}
+							else {
+								System.out.println("eeeeeeeeeee");
+								activeProcessInt++;
+								run = false;
+								break;
+							}
 					}
 			}
 		}
@@ -81,16 +87,23 @@ public class Logic_scheduler {
 			active_Process.increaseClock();
 			active_Process.increaseWorktime();
 			
-			if(active_Process.queue.size() < active_Process.getClock()) {
-				System.out.println("Prozess "+ active_Process.name +" hat keine Rechen- und Wartezeiten mehr");
+			if(active_Process.queue.size() <= active_Process.getClock()) {
+				active_Process.decreasePrio();
+				
+				System.out.println("Prozess "+ active_Process.name +" hat keine Rechen- und Wartezeiten mehr. Seine neue Prio ist: " + active_Process.getPrio());
 				active_Process.setState(State.FINISHED);
+				PrioComparator prioComparator1 = new PrioComparator();
+				Collections.sort(c.getProcessList(), prioComparator1);
 				break;
 			}
 			
 			if(active_Process.getWorktime() == 5) {
 				active_Process.setWorktime(0);
-				System.out.println("Prozess "+ active_Process.name +" muss Prozessor abgeben da er 5 mal hintereinander rechnen durfte!");
+				active_Process.decreasePrio();
+				System.out.println("Prozess "+ active_Process.name +" muss Prozessor abgeben da er 5 mal hintereinander rechnen durfte! Seine neue Prio ist: " + active_Process.getPrio());
 				active_Process.setState(State.WAIT);
+	
+				
 				System.out.println("Nun wir der Prozessor an den Prozess mit der längsten warte Zeit gegeben");
 				ProcessForced();
 				break;	
@@ -99,7 +112,7 @@ public class Logic_scheduler {
 			if(active_Process.queue.get(active_Process.getClock()) == "W") {		//Wenn Prozess keine Rechenzeiten mehr hat wird er auf Wait gesetzt und Prio Veringert
 				active_Process.decreasePrio();
 				active_Process.setState(State.WAIT);
-				System.out.println("Prozess "+ active_Process.name +" hat nun keine Rechnzeit mehr und muss jetzt warten und hat -2 bei der Prio bekommen");
+				System.out.println("Prozess "+ active_Process.name +" hat nun keine Rechnzeit mehr und muss jetzt warten und hat -2 bei der Prio bekommen und seine neue Prio ist: " + active_Process.getPrio());
 				break;
 			}
 		}
@@ -107,7 +120,7 @@ public class Logic_scheduler {
 
 	public void waiting() { 
 		
-		for (int r = 1; r < ProcessCount; r++) {
+		for (int r = activeProcessInt +1; r < ProcessCount; r++) {
 			if (c.getProcessList().get(r).pState == State.READY) {
 				activeProcessInt = r;
 				break;
@@ -132,6 +145,21 @@ public class Logic_scheduler {
 		}
 	}
 	
+	
+	private boolean checkAllEquals(ArrayList<Prozess> ProcessList)
+	  {
+	    String value = c.ProcessList.get(0).pState.toString();
+
+	    for (int t = 0; t < ProcessCount; t++)
+	    {	
+	    	String str = c.ProcessList.get(0).pState.toString();
+	    	if (str != value)
+	    		{
+	    			return false;
+	    		}
+	    }
+	    return false;
+	  }
 	
 	
 	private void ProcessForced() {
