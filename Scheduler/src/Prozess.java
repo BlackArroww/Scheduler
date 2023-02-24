@@ -84,6 +84,10 @@ public class Prozess {
 				  history.add("O");
 				  pState = State.READY;
 			}
+			else if (queue.get(t) == "R" && pState == State.WAIT) {
+				  System.out.println("R wäre in der Queue also muss dieser Prozess "+ name +" unfreiwillig warten ('X' in History)");
+				  history.add("X");
+			}
 			else if (queue.get(t) == "W") {
 				System.out.println("W wäre in der Queue also muss dieser Prozess "+ name +" eh warten ('I' in History) und hakt das also ab");
 				history.add("I");
@@ -95,6 +99,11 @@ public class Prozess {
 
 	public int getWaittime() {
 		return waittime;
+	}
+
+	public void setWaittime(int i) {
+		waittime = i;
+		
 	}
 
 

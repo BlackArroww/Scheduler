@@ -11,7 +11,7 @@ public class Logic_scheduler {
 	private int ProcessCount = 0; 
 	private int activeProcessInt = 0;
 	private boolean run = false;
-	
+	private boolean procF = false;
 	
 	public Logic_scheduler(Model_scheduler m, View_scheduler v, Controller_scheduler c) { 
 
@@ -46,24 +46,59 @@ public class Logic_scheduler {
 							c.getProcessList().get(activeProcessInt).setWorktime(0);
 							
 							System.out.println("------");
-							PrioComparator prioComparator1 = new PrioComparator();
-							Collections.sort(c.getProcessList(), prioComparator1);
-							System.out.println("Prozess Liste wird neugeladen");
+							if(procF == false) {
+								PrioComparator prioComparator1 = new PrioComparator();
+								Collections.sort(c.getProcessList(), prioComparator1);
+								System.out.println("Prozess Liste wird neugeladen");
+								activeProcessInt = 0;
+							}
+							else{
+								System.out.println("proCf = false");
+								procF = false;
+							}
+							
 							break;
 						case WAIT:
+							System.out.println("Ok");
 							waiting();
+							if(oneLeft() == true) {
+								System.out.println("Einer übrig!");
+								
+								int last = c.getProcessList().get(activeProcessInt).getClock();
+								int lastOtherProcess = (c.getProcessList().get(activeProcessInt).queue.size()-1)-last;
+								
+								for(int s = 0; s <= last; s++) {
+									c.getProcessList().get(activeProcessInt).history.add(c.getProcessList().get(activeProcessInt).queue.get(s));
+								}
+								
+								for (int r = 0; r <= lastOtherProcess; r++) {
+									for (int w = 0; w < ProcessCount; w++) {
+										
+											c.getProcessList().get(w).handleState(c.getProcessList().get(w).getClock());
+											c.getProcessList().get(w).increaseWaittime();
+											c.getProcessList().get(activeProcessInt).setState(State.READY);
+									}
+								}
+								
+								 c.getProcessList().get(activeProcessInt).setState(State.FINISHED);
+							}
+							System.out.println("Ok2");
 							break;
 						case FINISHED:
 							checkAllEquals(c.getProcessList());
 							if (checkAllEquals(c.getProcessList()) == true) {
 								System.out.println("Alle Prozesse fertig");
+								System.out.println("Prozess:" + c.getProcessList().get(0).name + " hat folgenden State " +c.getProcessList().get(0).pState);
+								System.out.println("Prozess:" + c.getProcessList().get(1).name + " hat folgenden State " +c.getProcessList().get(1).pState);
+								System.out.println("Prozess:" + c.getProcessList().get(2).name + " hat folgenden State " +c.getProcessList().get(2).pState);
 								run = false;
 								break;
 							}
-							else {
-								System.out.println("eeeeeeeeeee");
+							else if (checkAllEquals(c.getProcessList()) == false) {
 								activeProcessInt++;
-								run = false;
+								returnEverythingToGUI();
+								
+								
 								break;
 							}
 					}
@@ -72,12 +107,36 @@ public class Logic_scheduler {
 	}
 	
 
+	private boolean oneLeft() {
+		int count = 0;
+		
+		for (int t = 0; t < ProcessCount; t++)
+		    {	
+				if(c.ProcessList.get(t).pState == State.FINISHED) {
+					count++;
+				}
+		    }
+		if (count == ProcessCount -1) {
+			return true;
+		}
+		
+			return false;	
+		
+	}
+
+	private void returnEverythingToGUI() {
+	
+		
+	}
+
 	public void calc() {
 		final Prozess active_Process = c.getProcessList().get(activeProcessInt);
 		while (active_Process.queue.get(active_Process.getClock()) == "R") {
 			//System.out.println(c.getProcessList().get(0).getClock());
 			System.out.println("Prozess "+ active_Process.name +" hat eine Rechenzeiten verbraucht");
 			active_Process.history.add(active_Process.getClock(), "X");
+			active_Process.setWaittime(0);
+			
 			for (int w = 0; w < ProcessCount; w++) {
 				if(w != activeProcessInt) {
 					c.getProcessList().get(w).handleState(c.getProcessList().get(w).getClock());
@@ -86,16 +145,6 @@ public class Logic_scheduler {
 			}
 			active_Process.increaseClock();
 			active_Process.increaseWorktime();
-			
-			if(active_Process.queue.size() <= active_Process.getClock()) {
-				active_Process.decreasePrio();
-				
-				System.out.println("Prozess "+ active_Process.name +" hat keine Rechen- und Wartezeiten mehr. Seine neue Prio ist: " + active_Process.getPrio());
-				active_Process.setState(State.FINISHED);
-				PrioComparator prioComparator1 = new PrioComparator();
-				Collections.sort(c.getProcessList(), prioComparator1);
-				break;
-			}
 			
 			if(active_Process.getWorktime() == 5) {
 				active_Process.setWorktime(0);
@@ -108,6 +157,18 @@ public class Logic_scheduler {
 				ProcessForced();
 				break;	
 			}
+			
+			if(active_Process.queue.size() <= active_Process.getClock()) {
+				active_Process.decreasePrio();
+				
+				System.out.println("Prozess "+ active_Process.name +" hat keine Rechen- und Wartezeiten mehr. Seine neue Prio ist: " + active_Process.getPrio());
+				active_Process.setState(State.FINISHED);
+				PrioComparator prioComparator1 = new PrioComparator();
+				Collections.sort(c.getProcessList(), prioComparator1);
+				break;
+			}
+			
+			
 			
 			if(active_Process.queue.get(active_Process.getClock()) == "W") {		//Wenn Prozess keine Rechenzeiten mehr hat wird er auf Wait gesetzt und Prio Veringert
 				active_Process.decreasePrio();
@@ -148,21 +209,32 @@ public class Logic_scheduler {
 	
 	private boolean checkAllEquals(ArrayList<Prozess> ProcessList)
 	  {
-	    String value = c.ProcessList.get(0).pState.toString();
+	    String value = "FINISHED";
 
 	    for (int t = 0; t < ProcessCount; t++)
 	    {	
-	    	String str = c.ProcessList.get(0).pState.toString();
+	    	String str = c.ProcessList.get(t).pState.toString();
 	    	if (str != value)
 	    		{
 	    			return false;
 	    		}
 	    }
-	    return false;
+	    return true;
 	  }
 	
 	
 	private void ProcessForced() {
+		
+		int fpInt = 0;
+		
+		for (int a = 0;  a < ProcessCount; a++) {
+			int value =  c.ProcessList.get(fpInt).getWaittime();
+			if (value < c.ProcessList.get(a).getWaittime() && c.ProcessList.get(a).pState != State.WAIT) {
+				fpInt = a;
+			}
+		}
+		procF = true;
+		System.out.println("Prozessor wird an den Prozess: " + c.ProcessList.get(fpInt).name);
 	}
 	
 	private void AufgabeLaden() {
@@ -187,7 +259,7 @@ public class Logic_scheduler {
 			A.worktime = 0; 
 			c.ProcessList.add(A);
 		Prozess B = new Prozess();
-			B.name ="B";
+			B.name ="Assi Prozess";
 			B.prio = 10;
 			processqueue.add("R");
 			processqueue.add("W");
