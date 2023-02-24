@@ -7,6 +7,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.TextArea;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -16,6 +18,8 @@ import javax.swing.JList;
 import java.awt.CardLayout;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 
 public class View_scheduler extends JFrame {
 
@@ -26,7 +30,6 @@ public class View_scheduler extends JFrame {
 	private JButton apl_btn;
 	private JButton hzf_btn;
 	private JButton run_btn;
-	private JTable scheduler_dpl;
 	private JTextField name_fld;
 	private JTextField priority_fld;
 	private JTextField work_fld;
@@ -39,6 +42,8 @@ public class View_scheduler extends JFrame {
 	private JComboBox comboBox;
 	private JPanel prozesse;
 	private JTable prozesse_dpl;
+	private JTextArea scheduler_dpl;
+	private JButton loadAbi;
 
 	public View_scheduler() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,10 +80,11 @@ public class View_scheduler extends JFrame {
 
 		run_btn = new JButton("RUN!");
 		run_btn.setFont(new Font("Times New Roman", Font.PLAIN, 19));
-		run_btn.setBounds(756, 600, 193, 31);
-
-		scheduler_dpl = new JTable();
-		scheduler_dpl.setBounds(435, 81, 794, 508);
+		run_btn.setBounds(608, 600, 193, 31);
+		
+		loadAbi = new JButton("Abi-Aufgabe");
+		loadAbi.setFont(new Font("Times New Roman", Font.PLAIN, 19));
+		loadAbi.setBounds(910, 600, 193, 31);
 		
 
 		name_fld = new JTextField();
@@ -116,7 +122,10 @@ public class View_scheduler extends JFrame {
 		scheduler_lbl = new JLabel("Scheduler :");
 		scheduler_lbl.setFont(new Font("Tahoma", Font.BOLD, 23));
 		scheduler_lbl.setBounds(874, 23, 172, 31);
-
+		
+		scheduler_dpl = new JTextArea();
+		scheduler_dpl.setBounds(435, 81, 794, 508);
+		
 		comboBox = new JComboBox();
 		comboBox.addItem("Abi - Scheduler");
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -137,7 +146,6 @@ public class View_scheduler extends JFrame {
 		scheduler.add(apl_btn);
 		scheduler.add(hzf_btn);
 		scheduler.add(run_btn);
-		scheduler.add(scheduler_dpl);
 		scheduler.add(name_fld);
 		scheduler.add(priority_fld);
 		scheduler.add(work_fld);
@@ -147,11 +155,21 @@ public class View_scheduler extends JFrame {
 		scheduler.add(work_lbl);		
 		scheduler.add(wait_lbl);		
 		scheduler.add(scheduler_lbl);		
-		scheduler.add(comboBox);		
+		scheduler.add(comboBox);
+		scheduler.add(scheduler_dpl);
+		scheduler.add(loadAbi);
+		
+	
+		
 		tabbedPane.addTab("Prozesse", null, prozesse, null);
 		prozesse.add(prozesse_dpl);
 	
 		
+		
+	}
+	
+	public JTextArea getScheduler_dpl() {
+		return null;
 		
 	}
 	
@@ -161,6 +179,10 @@ public class View_scheduler extends JFrame {
 	
 	public JButton getHzf_btn() {
 		return hzf_btn;
+	}
+
+	public JButton getAbi_btn() {
+		return loadAbi;
 	}
 	
 	public JButton getRun_btn() {

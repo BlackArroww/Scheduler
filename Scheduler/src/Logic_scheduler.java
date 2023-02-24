@@ -2,6 +2,8 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javax.swing.JOptionPane;
+
 public class Logic_scheduler {
 	
 	private Model_scheduler m;
@@ -23,10 +25,10 @@ public class Logic_scheduler {
 	
 	public void initScheduler() {
 		v.getRun_btn().addActionListener(e ->run(e));
+		v.getAbi_btn().addActionListener(e ->AufgabeLaden(e));
 	}
 	 
 	public void run(ActionEvent e) {
-		AufgabeLaden();
 		if (v.getComboBox().getSelectedItem().equals("Abi - Scheduler")) {
 			
 			ProcessCount = c.ProcessList.size();
@@ -53,36 +55,16 @@ public class Logic_scheduler {
 								activeProcessInt = 0;
 							}
 							else{
-								System.out.println("proCf = false");
 								procF = false;
 							}
 							
 							break;
 						case WAIT:
-							System.out.println("Ok");
+							
 							waiting();
-							if(oneLeft() == true) {
-								System.out.println("Einer übrig!");
-								
-								int last = c.getProcessList().get(activeProcessInt).getClock();
-								int lastOtherProcess = (c.getProcessList().get(activeProcessInt).queue.size()-1)-last;
-								
-								for(int s = 0; s <= last; s++) {
-									c.getProcessList().get(activeProcessInt).history.add(c.getProcessList().get(activeProcessInt).queue.get(s));
-								}
-								
-								for (int r = 0; r <= lastOtherProcess; r++) {
-									for (int w = 0; w < ProcessCount; w++) {
-										
-											c.getProcessList().get(w).handleState(c.getProcessList().get(w).getClock());
-											c.getProcessList().get(w).increaseWaittime();
-											c.getProcessList().get(activeProcessInt).setState(State.READY);
-									}
-								}
-								
-								 c.getProcessList().get(activeProcessInt).setState(State.FINISHED);
+							if(one() == true) {
+								LastOne();
 							}
-							System.out.println("Ok2");
 							break;
 						case FINISHED:
 							checkAllEquals(c.getProcessList());
@@ -96,9 +78,6 @@ public class Logic_scheduler {
 							}
 							else if (checkAllEquals(c.getProcessList()) == false) {
 								activeProcessInt++;
-								returnEverythingToGUI();
-								
-								
 								break;
 							}
 					}
@@ -107,7 +86,66 @@ public class Logic_scheduler {
 	}
 	
 
-	private boolean oneLeft() {
+	private void LastOne() {
+		System.out.println("Einer übrig!");
+		
+		int last = c.getProcessList().get(activeProcessInt).getClock();
+		int lastOtherProcess = (c.getProcessList().get(activeProcessInt).queue.size()-1)-last;
+		
+		for(int s = 0; s <= last; s++) {
+			c.getProcessList().get(activeProcessInt).history.add(c.getProcessList().get(activeProcessInt).queue.get(s));
+		}
+		final Prozess active_Process = c.getProcessList().get(activeProcessInt);
+		for (int r = 0; r <= lastOtherProcess; r++) {
+			
+			if (active_Process.queue.get(active_Process.getClock()) == "R") {
+				
+				System.out.println("R ist in der Queue also kann dieser Prozess "+  active_Process.name +" rechnen ('X' in History)");
+				active_Process.history.add("X");
+				active_Process.pState = State.READY;
+				active_Process.increaseClock();
+
+				if(active_Process.clock <= active_Process.queue.size()) { ///////////////////////////////////////
+					
+					if(active_Process.getClock() == active_Process.queue.size()) {		//Wenn Prozess keine Rechenzeiten mehr hat wird er auf Wait gesetzt und Prio Veringert
+						active_Process.decreasePrio();
+						active_Process.setState(State.WAIT);
+						System.out.println("Prozess "+ active_Process.name +" hat keine Rechen- und Wartezeiten mehr. Seine neue Prio ist: " + active_Process.getPrio());
+						break;
+					}
+					
+					else if(active_Process.queue.get(active_Process.getClock()+1) == "W") {		//Wenn Prozess keine Rechenzeiten mehr hat wird er auf Wait gesetzt und Prio Veringert
+						active_Process.decreasePrio();
+						active_Process.setState(State.WAIT);
+						System.out.println("Prozess "+ active_Process.name +" hat nun keine Rechnzeit mehr und muss jetzt warten und hat -2 bei der Prio bekommen und seine neue Prio ist: " + active_Process.getPrio());
+						break;
+					}
+
+				}	
+				
+			}
+			else if (active_Process.queue.get(active_Process.getClock()) == "W") {
+				
+				System.out.println("W ist in der Queue also muss dieser Prozess "+  active_Process.name +" noch warten ('I' in History)");
+				active_Process.history.add("I");
+				active_Process.pState = State.WAIT;
+				active_Process.increaseClock();
+			
+			}
+			
+			for (int w = 0; w < ProcessCount; w++) {
+				if(w != activeProcessInt) {
+					c.getProcessList().get(w).handleState(c.getProcessList().get(w).getClock());
+					c.getProcessList().get(w).increaseWaittime();
+				}
+			}
+		}
+		
+		 active_Process.setState(State.FINISHED);
+		
+	}
+
+	private boolean one() {
 		int count = 0;
 		
 		for (int t = 0; t < ProcessCount; t++)
@@ -121,11 +159,6 @@ public class Logic_scheduler {
 		}
 		
 			return false;	
-		
-	}
-
-	private void returnEverythingToGUI() {
-	
 		
 	}
 
@@ -237,7 +270,7 @@ public class Logic_scheduler {
 		System.out.println("Prozessor wird an den Prozess: " + c.ProcessList.get(fpInt).name);
 	}
 	
-	private void AufgabeLaden() {
+	private void AufgabeLaden(ActionEvent e) {
 		ArrayList<String> processqueue = new ArrayList<String>();
 		ArrayList<String> processqueue1 = new ArrayList<String>();
 		ArrayList<String> processqueue2 = new ArrayList<String>();
@@ -259,7 +292,7 @@ public class Logic_scheduler {
 			A.worktime = 0; 
 			c.ProcessList.add(A);
 		Prozess B = new Prozess();
-			B.name ="Assi Prozess";
+			B.name ="B";
 			B.prio = 10;
 			processqueue.add("R");
 			processqueue.add("W");
@@ -290,6 +323,8 @@ public class Logic_scheduler {
 			C.waittime = 0;
 			C.worktime = 0;
 			c.ProcessList.add(C);
+			
+			JOptionPane.showMessageDialog(null,"Die Abitur Aufgabe wurde in den Scheduler geladen! Es kann also losgehen! ","Mitteilung", JOptionPane.INFORMATION_MESSAGE);
 			
 	}
 }
